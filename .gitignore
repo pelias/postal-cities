@@ -1,0 +1,4 @@
+pbf2json.*
+provider/
+*.tsv
+*.gz
