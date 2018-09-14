@@ -1,4 +1,7 @@
-pbf2json.*
-provider/
-*.tsv
-*.gz
+node_modules
+package-lock.json
+data
+*.db
+*.jsonl
+scripts/*.pbf
+scripts/pbf2json.darwin-x64
