@@ -7,7 +7,7 @@ const importer = require('./src/dbImportStream');
 const lookup = require('./src/placeholderLookup');
 
 // delete data if one already exists with the same name
-const dbfile = 'osm.postcodes.db';
+const dbfile = process.env.DB_FILENAME || 'osm.postcodes.db';
 fs.existsSync(dbfile) && fs.unlinkSync(dbfile)
 
 // connect and setup database

@@ -3,8 +3,13 @@ const request = require('superagent');
 const keepaliveAgent = require('./httpAgent')();
 const selectLocality = require('./selectLocality');
 
-const PLACEHOLDER_HTTP_URL = 'http://localhost:3000/parser/search';
-const PLACEHOLDER_QPS_LIMIT = 30;
+const PLACEHOLDER_DEFAULT_QPS = 30;
+const PLACEHOLDER_HOST = process.env.PLACEHOLDER_HOST || 'localhost';
+const PLACEHOLDER_PORT = process.env.PLACEHOLDER_PORT || '3000';
+const PLACEHOLDER_QPS = parseInt(process.env.PLACEHOLDER_QPS, 10);
+
+const PLACEHOLDER_HTTP_URL = `http://${PLACEHOLDER_HOST}:${PLACEHOLDER_PORT}/parser/search`;
+const PLACEHOLDER_QPS_LIMIT = PLACEHOLDER_QPS || PLACEHOLDER_DEFAULT_QPS;
 
 // query placeholder with the data from a single row
 function placeholder(row){

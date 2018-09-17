@@ -1,5 +1,8 @@
 const calcCrow = require('./calcCrow');
-const POINT_MAX_DISTANCE_KM = 200;
+
+const DEFAULT_MAX_DISTANCE_KM = 200;
+const ENV_MAX_DISTANCE_KM = parseInt(process.env.MAX_DISTANCE_KM, 10);
+const MAX_DISTANCE_KM = ENV_MAX_DISTANCE_KM || DEFAULT_MAX_DISTANCE_KM;
 
 function selectLocality(row, err, res){
     if( err ){ return { err: err } }
@@ -29,9 +32,9 @@ function selectLocality(row, err, res){
         var centroid = { lat: parseFloat( match.geom.lat ), lon: parseFloat( match.geom.lon ) };
         if( isNaN(centroid.lat) || isNaN(centroid.lon) ){ continue; }
 
-        // exclude records over POINT_MAX_DISTANCE_KM
+        // exclude records over MAX_DISTANCE_KM
         var km = calcCrow( rowLat, rowLon, centroid.lat, centroid.lon );
-        if( km > POINT_MAX_DISTANCE_KM ){ continue; }
+        if( km > MAX_DISTANCE_KM ){ continue; }
 
         // extract fields from row
         if( match.lineage.length ){
