@@ -41,7 +41,7 @@ The `pbf2json` script should output JSON lines, each line contains one OSM entit
 
 The next step is to import the relevant data in to a sqlite database, processing the full planet will produce many million rows, so using sqlite will ensure that we don't hit issues with available RAM.
 
-The database contains a table called `lastline` which has the following fields:
+The database contains a table called `lastline` which contains the following fields:
 
 | column name | description |
 |---|---|
@@ -56,7 +56,7 @@ The next step is to group similar entries and produce an aggreagate count.
 
 This allows us to reduce the number of entries in the table, while also providing a mechanism of determining which postcode+locality values are more common than others in OSM.
 
-The database contains a table called `aggregate` which has the following fields:
+The database contains a table called `aggregate` which contains the following fields:
 
 | column name | description |
 |---|---|
@@ -98,7 +98,7 @@ docker run -d \
 
 Pelias used the [whosonfirst gazetter](https://whosonfirst.org/) for administrative polygons.
 
-The next step uses a running [placeholder](https://github.com/pelias/placeholder) service to find a nearby locality in the Who's on first gazeteer which matches the locality name in the database and is also within a specific distance from the lat/lon we have in the database.
+The next step uses a running [placeholder](https://github.com/pelias/placeholder) service to find a nearby locality which matches the locality name in the database and is also within a specific distance from the lat/lon we have in the database.
 
 ## Executing the scripts
 
