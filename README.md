@@ -83,8 +83,8 @@ docker pull pelias/placeholder:master
 # ensure data dir exists
 mkdir -p data
 
-# download data
-curl -s https://s3.amazonaws.com/pelias-data.nextzen.org/placeholder/store.sqlite3.gz | gunzip > data/store.sqlite3
+# download data (hosting by Geocode Earth)
+curl -s https://data.geocode.earth/placeholder/store.sqlite3.gz | gunzip > data/store.sqlite3
 
 # start placeholder docker container
 docker run -d \
