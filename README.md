@@ -5,7 +5,7 @@ Scripts to generate mappings of postal codes to 'last line' postal localities (p
 
 ## Summary
 
-This repository contains tools to process the crowd-sourced data from the OpenStreetMap project in order to understand the association between postal codes and their corresponding locality (city).
+This repository contains tools to process the crowd-sourced data from the OpenStreetMap & OpenAddressess projects in order to understand the association between postal codes and their corresponding locality (city).
 
 The motivation for this project is that users commonly complain that the city associated with their address is incorrect.
 
@@ -17,11 +17,14 @@ A user addresses their postal mail to `100 Example Street, Souderton PA 18964, U
 
 Technically the association with `Franconia` is correct as the address lies within the political boundary of `Franconia`, however this doesn't change the fact that the locals refer to this location as `Souderton` despite it being slighly outside the political boundary of `Souderton`.
 
-In order to solve this problem, we will source all the locality names associated with the postal code `18964` within `USA` and use them to associate locality aliases which can be used when searching. 
+In order to solve this problem, we will source all the locality names associated with the postal code `18964` within `USA` and use them to associate locality aliases which can be used when searching.
 
 ## Data extraction workflow
 
 The scripts are designed to be used on a full-planet build but will work just as well for a smaller extract, running the planet build can take some time, if it's your first time try a smaller extract first.
+
+The expected input format for these scripts is a 4-column TSV file (without a header line).
+The four columns are (in left-to-right order): Postcode, City Name, Longitude, Latitude.
 
 ### Extract the relevant data from OpenStreetMap
 
@@ -37,6 +40,32 @@ The `pbf2json` script should output JSON lines, each line contains one OSM entit
 {"id":366753232,"type":"node","lat":39.6779242,"lon":-75.76328720000001,"tags":{"addr:city":"Newark","addr:housenumber":"220","addr:postcode":"19711","addr:state":"DE","addr:street":"South Main Street","amenity":"police","ele":"40","gnis:county_name":"New Castle","gnis:feature_id":"2131076","gnis:import_uuid":"57871b70-0100-4405-bb30-88b2e001a944","gnis:reviewed":"no","name":"Newark Police Department","phone":"+1-302-366-7111","source":"USGS Geonames"}}
 ```
 
+You can then convert the JSON to the 4-column TSV format by piping the data to:
+
+```bash
+... | jq -r 'select(.tags."addr:postcode" != null) | select(.tags."addr:city" != null) | [.tags."addr:postcode", .tags."addr:city", (.lon + .centroid.lon), (.lat + .centroid.lat)] | @tsv'
+```
+
+### Extract the relevant data from OpenAddresses
+
+The following command will work recursively on a directory of nested CSV files downloaded from http://results.openaddresses.io/
+
+You will need to download and unzip the data yourself before continuing. The `$OA_PATH` variable should point to a directory which should be searched recursively for CSV files.
+
+> The OA CSV files have the following headers:
+> LON,LAT,NUMBER,STREET,UNIT,CITY,DISTRICT,REGION,POSTCODE,ID,HASH
+
+You can then convert the CSV files to the 4-column TSV format as such:
+
+```bash
+find ${OA_PATH} \
+  -type f \
+  -name '*.csv' \
+    | xargs awk \
+      -F ',' \
+      'FNR > 1 {if ($1 && $2 && $6 && $9) print $9 "\t" $6 "\t" $1 "\t" $2}'
+```
+
 ### Import fields in to sqlite
 
 The next step is to import the relevant data in to a sqlite database, processing the full planet will produce many million rows, so using sqlite will ensure that we don't hit issues with available RAM.
@@ -45,10 +74,10 @@ The database contains a table called `lastline` which contains the following fie
 
 | column name | description |
 |---|---|
-| postcode | The `addr:postcode` tag from the OSM entity |
-| city | The `addr:city` tag from the OSM entity |
-| lon | The longitude value from OSM (or centroid in the case of a polygon) |
-| lat | The latitude value from OSM (or centroid in the case of a polygon) |
+| postcode | The postcode field from the source entity |
+| city | The city name from the source entity |
+| lon | The longitude value from source (or centroid in the case of a polygon) |
+| lat | The latitude value from source (or centroid in the case of a polygon) |
 
 ### Aggregation
 
@@ -105,7 +134,9 @@ The next step uses a running [placeholder](https://github.com/pelias/placeholder
 Once you have all the dependencies installed you can run the build process by piping the JSON lines document produced by `pbf2json` in to the nodejs import script as such:
 
 ```bash
-cat pbf2json.pelias.jsonl | node import.js 1> lastline.out 2> lastline.err
+cat pbf2json.pelias.jsonl \
+  | jq -r 'select(.tags."addr:postcode" != null) | select(.tags."addr:city" != null) | [.tags."addr:postcode", .tags."addr:city", (.lon + .centroid.lon), (.lat + .centroid.lat)] | @tsv' \
+  | DB_FILENAME=osm.postcodes.db node import.js 1> lastline.out 2> lastline.err
 ```
 
 The script will produce a database file `osm.postcodes.db` as described above and then will write lastline data in TSV format to `stdout` as it gets responses back from the Placeholder service, errors will be written to `stderr`.
