@@ -16,7 +16,13 @@ function streamFactory(db){
             city TEXT NOT NULL,
             lon REAL NOT NULL,
             lat REAL NOT NULL
-        );`);
+        );
+        PRAGMA JOURNAL_MODE=MEMORY;
+        PRAGMA SYNCHRONOUS=OFF;
+        PRAGMA LOCKING_MODE=EXCLUSIVE;
+        PRAGMA PAGE_SIZE=4096;
+        PRAGMA CACHE_SIZE=100;
+        PRAGMA TEMP_STORE=MEMORY;`);
 
     // prepare insert statement
     const stmt = db.prepare(`INSERT INTO lastline (postcode,city,lon,lat) VALUES (?,?,?,?)`);
