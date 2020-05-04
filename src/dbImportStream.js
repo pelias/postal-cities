@@ -17,7 +17,7 @@ function streamFactory(db){
             lon REAL NOT NULL,
             lat REAL NOT NULL
         );
-        PRAGMA JOURNAL_MODE=OFF;
+        PRAGMA JOURNAL_MODE=MEMORY;
         PRAGMA SYNCHRONOUS=OFF;
         PRAGMA LOCKING_MODE=EXCLUSIVE;
         PRAGMA PAGE_SIZE=4096;
