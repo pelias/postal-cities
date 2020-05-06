@@ -38,8 +38,11 @@ function streamFactory(db){
   };
 
   // populate aggregate table after all rows imported
+  // ensure that SQLite has enough tmp space
+  // export SQLITE_TMPDIR=/large/directory
   const flush = (done) => {
     db.exec(`
+      PRAGMA TEMP_STORE=FILE;
       INSERT INTO aggregate
       SELECT
           COUNT(*) AS count,
