@@ -10,7 +10,10 @@ const dbfile = process.env.DB_FILENAME || 'lastline.db';
 fs.existsSync(dbfile) && fs.unlinkSync(dbfile)
 
 // connect and setup database
-var db = new Sqlite3(dbfile);
+const db = new Sqlite3(dbfile);
+
+// enable unsafe mode (so we can use JOURNAL_MODE=OFF)
+db.unsafeMode(true);
 
 process.stdin
     .pipe(split())

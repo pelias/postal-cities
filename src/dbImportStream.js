@@ -17,7 +17,7 @@ function streamFactory(db){
       lon REAL NOT NULL,
       lat REAL NOT NULL
     );
-    PRAGMA JOURNAL_MODE=MEMORY;
+    PRAGMA JOURNAL_MODE=OFF;
     PRAGMA SYNCHRONOUS=OFF;
     PRAGMA LOCKING_MODE=EXCLUSIVE;
     PRAGMA PAGE_SIZE=4096;
@@ -40,20 +40,20 @@ function streamFactory(db){
   // populate aggregate table after all rows imported
   const flush = (done) => {
     db.exec(`
-        INSERT INTO aggregate
-        SELECT
-            COUNT(*) AS count,
-            TRIM(postcode) as postcode,
-            TRIM(TRIM(SUBSTR(city, INSTR(city,',')),',')) as city,
-            lon,
-            lat
-        FROM lastline
-        GROUP BY
-            UPPER(REPLACE(TRIM(postcode),' ','')),
-            UPPER(TRIM(TRIM(SUBSTR(city, INSTR(city,',')),',')))
-        ORDER BY
-            postcode ASC,
-            count DESC;
+      INSERT INTO aggregate
+      SELECT
+          COUNT(*) AS count,
+          TRIM(postcode) as postcode,
+          TRIM(TRIM(SUBSTR(city, INSTR(city,',')),',')) as city,
+          lon,
+          lat
+      FROM lastline
+      GROUP BY
+          UPPER(REPLACE(TRIM(postcode),' ','')),
+          UPPER(TRIM(TRIM(SUBSTR(city, INSTR(city,',')),',')))
+      ORDER BY
+          postcode ASC,
+          count DESC;
     `);
     done();
   }

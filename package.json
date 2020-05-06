@@ -20,7 +20,7 @@
   "homepage": "https://github.com/pelias/lastline#readme",
   "dependencies": {
     "agentkeepalive": "^3.5.1",
-    "better-sqlite3": "^5.0.0",
+    "better-sqlite3": "^7.0.1",
     "keepalive": "^3.0.0",
     "split2": "^3.0.0",
     "superagent": "^3.8.3",
