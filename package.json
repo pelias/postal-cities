@@ -22,6 +22,7 @@
     "agentkeepalive": "^3.5.1",
     "better-sqlite3": "^7.0.1",
     "keepalive": "^3.0.0",
+    "lodash": "^4.17.15",
     "split2": "^3.0.0",
     "superagent": "^3.8.3",
     "through2": "^2.0.3"

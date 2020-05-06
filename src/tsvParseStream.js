@@ -12,13 +12,14 @@ function streamFactory(){
       }
 
       this.push({
-        postcode: columns[0],
-        city: columns[1],
-        lon: columns[2],
-        lat: columns[3]
+        postcode: columns[0].trim(),
+        city: columns[1].trim(),
+        lon: columns[2].trim(),
+        lat: columns[3].trim()
       });
     } catch( e ){
-      console.error( 'invalid tsv row', e );
+      console.error('invalid tsv row', e);
+      console.error(row);
     }
 
     next();
