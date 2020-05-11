@@ -1,4 +1,3 @@
-
 const request = require('superagent');
 const keepaliveAgent = require('./httpAgent')();
 const selectLocality = require('./selectLocality');
@@ -48,7 +47,7 @@ function lookup(db){
         row = iterator.next();
         if( !row || row.done ){ clearInterval(i); }
         else { placeholder( row.value ); }
-    }, PLACEHOLDER_QPS_LIMIT);
+    }, (1000 / PLACEHOLDER_QPS_LIMIT));
 }
 
 module.exports = lookup;
