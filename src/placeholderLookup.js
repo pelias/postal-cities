@@ -18,7 +18,7 @@ function placeholder(row){
          .query({
             text: row.city,
             lang: 'eng',
-            placetype: 'locality,borough'
+            placetype: 'locality,borough,neighbourhood'
          })
          .end((err, res) => {
             var locality = selectLocality(row, err, res);

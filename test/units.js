@@ -2,7 +2,6 @@ var tape = require('tape');
 var path = require('path');
 
 var tests = [
-  './src/jsonParseStream',
   './src/selectLocality',
 ];
 
