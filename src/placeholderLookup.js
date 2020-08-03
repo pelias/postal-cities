@@ -3,9 +3,11 @@ const keepaliveAgent = require('./httpAgent')();
 const selectLocality = require('./selectLocality');
 
 const PLACEHOLDER_DEFAULT_QPS = 30;
+const PLACEHOLDER_DEFAULT_PLACETYPES = 'locality,borough';
 const PLACEHOLDER_HOST = process.env.PLACEHOLDER_HOST || 'localhost';
 const PLACEHOLDER_PORT = process.env.PLACEHOLDER_PORT || '3000';
 const PLACEHOLDER_QPS = parseInt(process.env.PLACEHOLDER_QPS, 10);
+const PLACEHOLDER_PLACETYPES = process.env.PLACEHOLDER_PLACETYPES || PLACEHOLDER_DEFAULT_PLACETYPES;
 
 const PLACEHOLDER_HTTP_URL = `http://${PLACEHOLDER_HOST}:${PLACEHOLDER_PORT}/parser/search`;
 const PLACEHOLDER_QPS_LIMIT = PLACEHOLDER_QPS || PLACEHOLDER_DEFAULT_QPS;
@@ -18,7 +20,7 @@ function placeholder(row){
          .query({
             text: row.city,
             lang: 'eng',
-            placetype: 'locality,borough'
+            placetype: PLACEHOLDER_PLACETYPES
          })
          .end((err, res) => {
             var locality = selectLocality(row, err, res);
