@@ -1,5 +1,5 @@
 
-# Lastline Build Script
+# Postal Cities
 
 Scripts to generate mappings of postal codes to 'last line' postal localities (postal cities)
 
