@@ -119,7 +119,7 @@ curl -s https://data.geocode.earth/placeholder/store.sqlite3.gz | gunzip > data/
 docker run -d \
     -p '3000:3000' \
     -e 'PLACEHOLDER_DATA=/data/placeholder' \
-    -v '/data/placeholder:/data/placeholder' \
+    -v "$(pwd}/data:/data/placeholder" \
     pelias/placeholder:master
 ```
 
