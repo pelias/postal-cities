@@ -8,6 +8,7 @@
   "license": "MIT",
   "main": "import.js",
   "scripts": {
+    "ci": "npm run test",
     "test": "./scripts/units"
   },
   "repository": {
